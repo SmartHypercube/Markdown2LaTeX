@@ -81,7 +81,7 @@ class LaTeXRenderer(mistune.Renderer):
 
     def escape(self, text):
         if not text:
-            return text
+            return ''
         newtext = ''
         for c in text:
             if c == '$':
