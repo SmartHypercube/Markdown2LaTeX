@@ -1,5 +1,13 @@
+#!/usr/bin/python3
+# encoding=utf-8
+
 import sys
 import mistune
+
+# see http://0x01.me/Python字符编码的一个坑/
+import codecs
+sys.stdout = codecs.getwriter('utf8')(sys.stdout.detach())
+sys.stdin = codecs.getreader('utf8')(sys.stdin.detach())
 
 
 class LaTeXRenderer(mistune.Renderer):
@@ -72,6 +80,8 @@ class LaTeXRenderer(mistune.Renderer):
         return self.escape(text)
 
     def escape(self, text):
+        if not text:
+            return text
         newtext = ''
         for c in text:
             if c == '$':
@@ -80,12 +90,12 @@ class LaTeXRenderer(mistune.Renderer):
                 continue
             if self.replace:
                 # c = c.replace('\\', '\\textbackslash')
-                c = c.replace('{', '\\{')
-                c = c.replace('}', '\\}')
+                # c = c.replace('{', '\\{')
+                # c = c.replace('}', '\\}')
                 # c = c.replace('\\textbackslash', '\\textbackslash{}')
                 c = c.replace('~', '\\textasciitilde{}')
                 c = c.replace('#', '\\#')
-                c = c.replace('$', '\\$')
+                # c = c.replace('$', '\\$')
                 c = c.replace('%', '\\%')
                 c = c.replace('^', '\\textasciicircum{}')
                 c = c.replace('&', '\\&')
@@ -97,7 +107,7 @@ class LaTeXRenderer(mistune.Renderer):
         return self.escape(link)
 
     def link(self, link, title, text):
-        return '\\href{%s}{%s}' % (self.escape(link), self.escape(title))
+        return '\\href{%s}{%s}' % (self.escape(link), self.escape(text))
 
     def image(self, src, title, text):
         if text:
