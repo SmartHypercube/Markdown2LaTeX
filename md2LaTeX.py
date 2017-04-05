@@ -19,12 +19,12 @@ class LaTeXRenderer(mistune.Renderer):
         code = code.rstrip('\n')
         if lang and code:
             code = self.escape(code)
-            return '\\begin{lstlisting}[language=%s, frame=single]\n%s\n\\end{lstlisting}\n\n' % (lang, code)
+            return '\\begin{lstlisting}[language=%s]\n%s\n\\end{lstlisting}\n\n' % (lang, code)
         if lang:
             lang, _, filename = lang[:-1].partition('[')
-            return '\\lstinputlisting[language=%s, frame=single, caption={%s}]{%s}\n\n' % (lang, self.escape(filename), filename)
+            return '\\lstinputlisting[language=%s, caption={%s}]{%s}\n\n' % (lang, self.escape(filename), filename)
         code = self.escape(code)
-        return '\\begin{lstlisting}[frame=single]\n%s\n\\end{lstlisting}\n\n' % code
+        return '\\begin{lstlisting}\n%s\n\\end{lstlisting}\n\n' % code
 
     def block_quote(self, text):
         return '\\begin{quote}%s\n\\end{quote}\n\n' % text.rstrip('\n')
@@ -127,10 +127,10 @@ class LaTeXRenderer(mistune.Renderer):
                % (src, self.escape(title))
 
     def footnote_ref(self, key, index):
-        return '\\footnotemark'
+        raise NotImplementedError
 
     def footnote_item(self, key, text):
-        return '\\footnotetext{%s}' % text.rstrip()
+        raise NotImplementedError
 
     def footnotes(self, text):
         return text
@@ -155,6 +155,7 @@ def main():
 \usepackage[colorlinks,linkcolor=black,anchorcolor=black,citecolor=black,unicode]{hyperref}
 \usepackage{float}
 \usepackage{listings}
+\lstset{frame=single,breaklines=true,postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookrightarrow\space}}}
 
 \renewcommand{\lstlistingname}{程序}
 \renewcommand{\contentsname}{目录}
